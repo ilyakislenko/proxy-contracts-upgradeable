@@ -1,0 +1,13 @@
+.ConnectForm{
+    display: flex;
+    flex-direction: column;
+    align-items:center;
+    border-radius:10px;
+}
+.container-functional {
+    display: flex;
+    flex-direction: column;
+    align-items:center;
+    justify-content: center;
+	margin: 0px;
+}

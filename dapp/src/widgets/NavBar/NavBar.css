@@ -1,0 +1,28 @@
+.navbar {
+    width: 100%;
+    height: 60px;
+    background: #6A8E7F;
+    display: flex;
+    position: relative;
+    align-items: center;
+    justify-content: space-between;
+    color: #ffffff;
+    box-sizing: border-box;
+    padding:  0 10px 0 10px;
+}
+.navbar span{
+    cursor: pointer;
+}
+.navbar-name{
+display: flex;
+justify-self: stretch;
+position: absolute;
+left:50%;
+top:50%;
+transform:translate(-50%, -125%);
+}
+@media (max-width:768px) {
+    .navbar-name{
+        display:none;
+    }
+}
