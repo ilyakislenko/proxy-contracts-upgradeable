@@ -1,16 +1,12 @@
-.factory-container{
+.TokensRequestMenu{
     display: flex;
     flex-direction: column;
     align-items:center;
     flex-grow: 1;
     margin: 0 0.7rem 0 0;
 }
-.flex-form{
-display: flex;
-flex-direction: column;
-align-items:center;
-}
-.flex-container{
-    display:flex;
+.input-container{
+    display: flex;
     flex-direction: column;
+    align-items:center;
 }

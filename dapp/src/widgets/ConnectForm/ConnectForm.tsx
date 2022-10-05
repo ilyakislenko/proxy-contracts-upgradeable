@@ -1,5 +1,5 @@
 import "./ConnectForm.css";
-import { Button } from "../Button/Button";
+import { Button } from "../../shared/Button/Button";
 interface ConnectFormProps {
 	connect: () => Promise<void>;
 	disconnect: () => void;
@@ -17,8 +17,10 @@ export const ConnectForm = (props: ConnectFormProps) => {
 				) : (
 					<>
 						<Button text="Connect Metamask" handleClick={connect} />
+						{errorMessage}
 					</>
-				)}
+				)
+				}
 			</div>
 		</div>
 	);

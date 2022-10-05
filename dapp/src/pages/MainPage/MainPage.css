@@ -1,7 +1,64 @@
 .container {
 	display: flex;
 	flex-direction: column;
-	justify-content: center;
+	height: 100%;
+	background: #0f2027; 
+	background: linear-gradient(to right,#2c5364, #203a43, #0f2027);
+	display: flex;
 	align-items: center;
+	color: #fff;
 }
+.container-menus{
+	display: flex;
+	justify-content: space-between;
+	animation: 3s anim-fade ease-out;
+}
+.container h3{
+	animation: 2s anim-lineUp ease-out;
+}
+@keyframes anim-fade {
+	0% {
+		opacity: 0;
 
+	}
+	50% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
+}
+@keyframes anim-lineUp {
+	0% {
+		opacity: 0;
+		transform: translateY(-500%);
+	}
+	20% {
+		opacity: 0;
+	}
+	50% {
+		opacity: 1;
+		transform: translateY(0%);
+	}
+	100% {
+		opacity: 1;
+		transform: translateY(0%);
+	}
+}
+@keyframes anim-lineDown {
+	0% {
+		opacity: 0;
+		transform: translateY(100%);
+	}
+	20% {
+		opacity: 0;
+	}
+	50% {
+		opacity: 1;
+		transform: translateY(0%);
+	}
+	100% {
+		opacity: 1;
+		transform: translateY(0%);
+	}
+}

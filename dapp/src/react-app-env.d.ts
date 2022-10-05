@@ -1,7 +1,7 @@
-import { MetaMaskInpageProvider } from "@metamask/providers";
+import { ethers } from "ethers";
 /// <reference types="react-scripts" />
 declare global {
 	interface Window {
-		ethereum?: any;
+		ethereum?: ethers.providers.ExternalProvider
 	}
 }

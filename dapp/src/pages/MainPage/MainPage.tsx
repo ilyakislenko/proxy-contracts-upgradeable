@@ -4,21 +4,23 @@ import { ContractFactory } from "../../widgets/ContractFactory/ContractFactory";
 import FactoryClone_abi from "../../config/abi/FactoryClone_abi.json";
 import "./MainPage.css";
 import NavBar from "../../widgets/NavBar/NavBar";
-import ConnectForm from "../../shared/ConnectForm/ConnectForm";
+import ConnectForm from "../../widgets/ConnectForm/ConnectForm";
+import { TokensRequestMenu } from "../../widgets/TokenRequestMenu/TokensRequestMenu";
+import { Display } from "../../widgets/Display/Display";
 export const MainPage = () => {
-	let contract_address = "0x85Be57893EE963bAB45c42E988a1FeCC62BA5513";
+	const contract_address = "0x99C95179740C21b314f80FCff26b438333990Cb9";
 	const [errorMessage, setErrorMessage] = useState<null | string>(null);
 	const [currentAccount, setCurrentAccount] = useState<string | null>(null);
 	const [currentBalance, setCurrentBalance] = useState<string | null>(null);
 	const [isConnected, setIsConnected] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
 	const [provider, setProvider] =
 		useState<ethers.providers.Web3Provider | null>(null);
 	const [signer, setSigner] = useState<ethers.providers.JsonRpcSigner | null>(
 		null
 	);
 	const [contract, setContract] = useState<ethers.Contract | null>(null);
-	const [clones, setClones] = useState<any>([]);
-	const [history,setHistory] = useState<any>();
+	const [tokens, setTokens] = useState<string[]>([]);
 	useEffect(() => {
 		const connectWalletOnPageLoad = async () => {
 			if (localStorage?.getItem("isWalletConnected") === "true") {
@@ -37,11 +39,14 @@ export const MainPage = () => {
 			try {
 				const provider = new ethers.providers.Web3Provider(window.ethereum);
 				setProvider(provider);
-				await provider.send("eth_requestAccounts", []);
+				await provider
+					.send("eth_requestAccounts", [])
+					.catch((err: any) => console.warn("err", err));
 				const signer = provider.getSigner();
 				const userAddress = await signer.getAddress();
 				if (userAddress) {
 					localStorage.setItem("isWalletConnected", "true");
+					setErrorMessage("");
 					setIsConnected(true);
 					setCurrentAccount(userAddress);
 					setSigner(signer);
@@ -53,16 +58,18 @@ export const MainPage = () => {
 						)
 					);
 				} else {
-					setErrorMessage("Reason: Error connecting to metamask account:");
+					setErrorMessage("Reason: Cannot get user address");
+					localStorage.setItem("isWalletConnected", "false");
 				}
-			} catch (error) {
-				console.log(error);
-				setIsConnected(false);
+			} catch {
+				setErrorMessage("Reason: Error connecting to metamask account");
+				localStorage.setItem("isWalletConnected", "false");
 			}
 		} else {
 			setErrorMessage(
 				"Reason: Please install MetaMask browser extension to interact"
 			);
+			localStorage.setItem("isWalletConnected", "false");
 		}
 	};
 
@@ -85,6 +92,7 @@ export const MainPage = () => {
 
 	const useContract = async (e: React.SyntheticEvent<HTMLFormElement>) => {
 		e.preventDefault();
+		setIsLoading(true);
 		const target = e.target as typeof e.target & {
 			name: { value: string };
 			symbol: { value: string };
@@ -94,24 +102,47 @@ export const MainPage = () => {
 		const tokenSymbol = target.symbol.value;
 		const supply = target.supply.value;
 		if (name && tokenSymbol && supply && contract && provider) {
-			contract.createToken(name, tokenSymbol, supply).then(async (data:any) => {
-				if(data){
-					const transaction = await provider.waitForTransaction(data.hash)
-					if(transaction){
-						setClones((clones: any) => [...clones, transaction]);
+			const data = await contract
+				.createToken(name, tokenSymbol, supply)
+				.catch(() => setIsLoading(false));
+			if (data) {
+				if (data.hash) {
+					console.warn(data);
+					const transaction = await provider.waitForTransaction(data.hash);
+					if (transaction) {
 						getBalance();
 					}
 				}
-			})
+				setIsLoading(false);
+			}
 		}
 	};
-	const getHistory = async() => {
-		const historyProvider = new ethers.providers.EtherscanProvider()
-		historyProvider.getHistory(contract_address).then((data) =>{
-			console.log('hist', data);
-			setHistory(data);
-		}).catch(err => console.log(err));
-	}
+	const getTokens = async (e: React.SyntheticEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		const target = e.target as typeof e.target & {
+			startIndex: { value: number };
+			endIndex: { value: number };
+		};
+		const startIndex = target.startIndex.value;
+		const endIndex = target.endIndex.value;
+		if (contract) {
+			const data = await contract
+				.getTokens(startIndex, endIndex)
+				.catch((err: { errorSignature: string }) => {
+					console.warn(err);
+					if (err.errorSignature === "Panic(uint256)") {
+						setTokens([
+							"The contract does not contain the requested number of tokens",
+						]);
+					}
+				});
+			if (data) {
+				setTokens(data);
+			}
+		} else {
+			console.log("Not connected to metamask");
+		}
+	};
 	useEffect(() => {
 		if (provider && signer) {
 			getBalance();
@@ -126,8 +157,15 @@ export const MainPage = () => {
 				isConnected={isConnected}
 				errorMessage={errorMessage}
 			/>
-			<ContractFactory useContract={useContract} />
-			<button onClick={getHistory}>get</button>
+			<h3>You can create contract and get tokens here </h3>
+
+			{isConnected && (
+				<div className="container-menus">
+					<ContractFactory useContract={useContract} isLoading={isLoading} />
+					<TokensRequestMenu handleClick={getTokens} isLoading={isLoading} />
+					<Display tokens={tokens} isLoading={isLoading} />
+				</div>
+			)}
 		</div>
 	);
 };

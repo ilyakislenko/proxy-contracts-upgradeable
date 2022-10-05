@@ -20,7 +20,6 @@ export const NavBar = ({ currentBalance, currentAccount }: NavBarProps) => {
 				)) : <b>Not Authorized</b>}
 				
 			</span>
-			<h4 className="navbar-name">Token erc20 upgradeable clone factory</h4>
 			<span onClick={onToggle}>
 				{isActive && currentBalance ? (
 					<b>{currentBalance + " "}</b>

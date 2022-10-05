@@ -1,0 +1,15 @@
+.Display {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	flex-grow: 1;
+	overflow-y: auto;
+	width: inherit;
+	height: 100%;
+	width: 400px;
+	border: 1px solid #ffffff;
+}
+.token-p {
+	animation: 1s anim-fade ease-out;
+}
+
