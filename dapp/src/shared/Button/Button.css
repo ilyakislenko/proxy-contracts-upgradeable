@@ -41,3 +41,61 @@ svg {
 	font-size: 18px;
 	font-weight: 100;
 }
+@media (max-width: 1440px) {
+	.center {
+		width: 135px;
+		height: 45px;
+	}
+	.btn {
+		width: 135px;
+		height: 45px;
+	}
+	.btn span {
+		font-size: 14px;
+	}
+	.border {
+		width: 135px;
+		height: 45px;
+	}
+}
+@media (max-width: 1024px) {
+	.center {
+		width: 120px;
+		height: 40px;
+	}
+	.btn {
+		width: 120px;
+		height: 40px;
+	}
+	.btn span {
+		font-size: 14px;
+	}
+	.border {
+		width: 120px;
+		height: 40px;
+	}
+}
+@media (max-width: 768px) {
+	.center {
+		width: 300px;
+		height: 40px;
+	}
+	.btn {
+		width: 300px;
+		height: 40px;
+	}
+	.btn span {
+		font-size: 14px;
+	}
+	.border {
+		display: none;
+	}
+}
+@media (max-width:319px) {
+	.center{
+		width: 240px;
+	}
+	.btn{
+		width: 240px;
+	}
+}

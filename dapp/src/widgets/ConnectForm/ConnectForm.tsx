@@ -11,17 +11,15 @@ export const ConnectForm = (props: ConnectFormProps) => {
 		props;
 	return (
 		<div className="ConnectForm">
-			<div className="container-functional">
 				{isConnected ? (
 						<Button text="Disconnect" handleClick={disconnect} />
 				) : (
 					<>
-						<Button text="Connect Metamask" handleClick={connect} />
+						<Button text="Connect" handleClick={connect} />
 						{errorMessage}
 					</>
 				)
 				}
-			</div>
 		</div>
 	);
 };

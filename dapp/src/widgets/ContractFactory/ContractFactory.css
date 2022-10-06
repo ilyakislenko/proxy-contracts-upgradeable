@@ -14,3 +14,11 @@ align-items:center;
     display:flex;
     flex-direction: column;
 }
+@media (max-width:768px) {
+    .factory-container{
+        margin: 0.7rem 0 0.7rem 0;
+    }
+    .factory-container, .flex-form{
+        width: 100%;
+    }
+}

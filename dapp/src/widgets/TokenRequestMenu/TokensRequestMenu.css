@@ -10,3 +10,8 @@
     flex-direction: column;
     align-items:center;
 }
+@media (max-width:768px) {
+    .TokensRequestMenu{
+        margin: 0.7rem 0 0.7rem 0;
+    }
+}

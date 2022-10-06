@@ -3,7 +3,7 @@
     flex-direction: column;
     align-items:center;
     border-radius:10px;
-    width: 100%;
+    width: 300px;
     animation: 2s anim-lineUp ease-out;
 }
 .container-functional {
