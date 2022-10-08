@@ -7,8 +7,8 @@ import NavBar from "../../widgets/NavBar/NavBar";
 import ConnectForm from "../../widgets/ConnectForm/ConnectForm";
 import { TokensRequestMenu } from "../../widgets/TokenRequestMenu/TokensRequestMenu";
 import { Display } from "../../widgets/Display/Display";
-export const MainPage = () => {
-	const contract_address = "0x99C95179740C21b314f80FCff26b438333990Cb9";
+export const MainPage:React.FC = () => {
+	const contract_address = "0x99C95179740C21b314f80FCff26b438333990Cb9"; // Add your contract address
 	const [errorMessage, setErrorMessage] = useState<null | string>(null);
 	const [currentAccount, setCurrentAccount] = useState<string | null>(null);
 	const [currentBalance, setCurrentBalance] = useState<string | null>(null);
@@ -41,7 +41,7 @@ export const MainPage = () => {
 				setProvider(provider);
 				await provider
 					.send("eth_requestAccounts", [])
-					.catch((err: any) => console.warn("err", err));
+					.catch((err: { errorSignature: string }) => console.warn("err", err));
 				const signer = provider.getSigner();
 				const userAddress = await signer.getAddress();
 				if (userAddress) {
