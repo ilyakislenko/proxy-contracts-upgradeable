@@ -1,17 +1,20 @@
 import { ethers } from "ethers";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ContractFactory } from "../../widgets/ContractFactory/ContractFactory";
 import FactoryClone_abi from "../../config/abi/FactoryClone_abi.json";
 import "./MainPage.css";
-import NavBar from "../../widgets/NavBar/NavBar";
-import ConnectForm from "../../widgets/ConnectForm/ConnectForm";
+import { NavBar } from "../../widgets/NavBar/NavBar";
+import { ConnectForm } from "../../widgets/ConnectForm/ConnectForm";
 import { TokensRequestMenu } from "../../widgets/TokenRequestMenu/TokensRequestMenu";
 import { Display } from "../../widgets/Display/Display";
-export const MainPage:React.FC = () => {
+import { Toast } from "../../features/Toast/Toast";
+export const MainPage: React.FC = () => {
 	const contract_address = "0x99C95179740C21b314f80FCff26b438333990Cb9"; // Add your contract address
 	const [errorMessage, setErrorMessage] = useState<null | string>(null);
 	const [currentAccount, setCurrentAccount] = useState<string | null>(null);
 	const [currentBalance, setCurrentBalance] = useState<string | null>(null);
+	const [isActive, setIsActive] = useState(false);
+	const [ToastType, setToastType] = useState<"success" | "error">("success");
 	const [isConnected, setIsConnected] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const [provider, setProvider] =
@@ -34,8 +37,19 @@ export const MainPage:React.FC = () => {
 		};
 		connectWalletOnPageLoad();
 	}, []);
+	useEffect(() => {
+		const interval = setInterval(() => {
+			if (isActive) {
+				setIsActive(false);
+			}
+		}, 3000);
+		return () => {
+			clearInterval(interval);
+		};
+	}, [isActive]);
+	console.log("render");
 	const connect = async () => {
-		if (window.ethereum && window.ethereum.isMetaMask) {
+		if (window.ethereum != null && window.ethereum.isMetaMask) {
 			try {
 				const provider = new ethers.providers.Web3Provider(window.ethereum);
 				setProvider(provider);
@@ -81,14 +95,14 @@ export const MainPage:React.FC = () => {
 		setCurrentBalance(null);
 	};
 
-	const getBalance = useCallback(async () => {
-		if (signer && provider) {
+	const getBalance = async () => {
+		if (signer != null && provider != null) {
 			const balance = await signer.getBalance();
 			setCurrentBalance(ethers.utils.formatEther(balance) + " ETH");
 		} else {
 			setErrorMessage(null);
 		}
-	}, [provider, signer]);
+	};
 
 	const useContract = async (e: React.SyntheticEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -101,7 +115,7 @@ export const MainPage:React.FC = () => {
 		const name = target.name.value;
 		const tokenSymbol = target.symbol.value;
 		const supply = target.supply.value;
-		if (name && tokenSymbol && supply && contract && provider) {
+		if (name && tokenSymbol && supply && contract != null && provider != null) {
 			const data = await contract
 				.createToken(name, tokenSymbol, supply)
 				.catch(() => setIsLoading(false));
@@ -113,7 +127,12 @@ export const MainPage:React.FC = () => {
 						getBalance();
 					}
 				}
+				setIsActive(true);
+				setToastType("success");
 				setIsLoading(false);
+			} else {
+				setIsActive(true);
+				setToastType("error");
 			}
 		}
 	};
@@ -125,10 +144,12 @@ export const MainPage:React.FC = () => {
 		};
 		const startIndex = target.startIndex.value;
 		const endIndex = target.endIndex.value;
-		if (contract) {
+		if (contract != null) {
 			const data = await contract
 				.getTokens(startIndex, endIndex)
 				.catch((err: { errorSignature: string }) => {
+					setIsActive(true);
+					setToastType("error");
 					console.warn(err);
 					if (err.errorSignature === "Panic(uint256)") {
 						setTokens([
@@ -138,13 +159,15 @@ export const MainPage:React.FC = () => {
 				});
 			if (data) {
 				setTokens(data);
+				setIsActive(true);
+				setToastType("success");
 			}
 		} else {
 			console.log("Not connected to metamask");
 		}
 	};
 	useEffect(() => {
-		if (provider && signer) {
+		if (provider != null && signer != null) {
 			getBalance();
 		}
 	}, [getBalance]);
@@ -165,6 +188,12 @@ export const MainPage:React.FC = () => {
 					<TokensRequestMenu handleClick={getTokens} isLoading={isLoading} />
 					<Display tokens={tokens} isLoading={isLoading} />
 				</div>
+			)}
+			{isActive && (
+				<Toast
+					text={ToastType === "success" ? "Succesfull!" : "Something wrong!"}
+					ToastType={ToastType}
+				/>
 			)}
 		</div>
 	);

@@ -1,0 +1,40 @@
+.Toast {
+    position: fixed;
+    box-sizing: border-box;
+	width: 300px;
+	height: 60px;
+	border-radius: 5px;
+	bottom: 10px;
+	right: 10px;
+    animation: toast-in-right .7s;
+}
+@media (max-width: 768px) {
+	.Toast {
+		right: auto;
+	}
+}
+@media (max-width: 319px) {
+    .Toast{
+        width: 242px;
+    }
+}
+.toast-error {
+	background: rgb(239, 86, 86);
+}
+.toast-error:hover{
+    background: rgb(248, 107, 107);
+}
+.toast-success {
+	background: rgb(124, 255, 124);
+}
+.toast-success:hover{
+    background: rgb(158, 255, 158);
+}
+@keyframes toast-in-right {
+    from {
+      transform: translateX(100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
