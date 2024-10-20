@@ -1,7 +1,7 @@
 
 # Proxy contracts upgreadeable clone factory
 
-This repository is designed to help people create their own token contracts for their own use.
+Meme project.
 
 
 ## Installation
